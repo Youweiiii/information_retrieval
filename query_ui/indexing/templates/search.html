@@ -51,88 +51,80 @@
             </div>  
             <div class="col-xs-10 col-sm-4"></div>     
         </div>
-        <br>
-        <br>
-        <hr>
+    </form>
+    <br>
+    <br>
+    <hr>
 
-        <div class="container-fluid">
+    <div class="container-fluid">
 
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="list-group">
-                        <ul>
-
-
-                        </ul>
-                        <ul>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="list-group">
+                    <ul>
 
 
-                        </ul>
+                    </ul>
+                    <ul>
 
-                        <ul>
+
+                    </ul>
+
+                    <ul>
 
 
-                        </ul>
-
-                    </div>
-                </div>
-
-                <div class="col-sm-9 verticalLine" align="left">
-                    <br>
-                    <br>
-                    <br>                                                
-                       <!--  {% if results %}
-                            <ul>
-                                {% for result in results %}
-                                <li><a href="{{ search.url }}">{{ result.jobtitle }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}    -->
-
-                        <div class="list-group">
-                        {% if results %}
-                            <ul>
-                            {% for result in results %}
-                            <div class="list-group-item list-group-item-action flex-column align-items-start">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h3 class="mb-1" style="color: #009ACD"> 
-                                        <a href="{% url 'job_details' pk=result.job_id %}">
-
-                                        {{result.jobtitle}}</a>
-                                    </h3>
-
-                                    <h5>{{result.company}}</h5>
-                                </div>
-                                <h6 class="mb-1">{{result.JD}}</h6>
-                                <p class="text-muted">
-                                    <span>Location: </span>
-                                    <span>{{result.city}}, </span>
-                                    <span>{{result.state}}, </span>
-                                    <span>{{result.country}}</span>
-                                    <span class="pull-right">Posted on: {{result.date}}</span>
-                                </p>
-                            </div>
-                            {% endfor %}
-                            </ul>
-                        {% endif %}   
-                        <hr>
-
-                    </div>
+                    </ul>
 
                 </div>
             </div>
+
+            <div class="col-sm-8 verticalLine" align="left">
+                <br>
+                <br>
+                <br>                                                
+                   <!--  {% if results %}
+                        <ul>
+                            {% for result in results %}
+                            <li><a href="{{ search.url }}">{{ result.jobtitle }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}    -->
+
+                    <div class="list-group">
+                    {% if results %}
+                        <ul>
+                        {% for result in results %}
+                        <div class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h3 class="mb-1" style="color: #009ACD"> 
+                                    <a href="{% url 'job_details' pk=result.job_id %}">
+
+                                    {{result.jobtitle}}</a>
+                                </h3>
+
+                                <h5>{{result.company}}</h5>
+                            </div>
+                            <h6 class="mb-1">{{result.JD}}</h6>
+                            <p class="text-muted">
+                                <span>Location: </span>
+                                <span>{{result.city}}, </span>
+                                <span>{{result.state}}, </span>
+                                <span>{{result.country}}</span>
+                                <span class="pull-right">Posted on: {{result.date}}</span>
+                            </p>
+                        </div>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}   
+                    <hr>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-1 verticalLine" align="left">
         </div>
-
-    <!-- Page Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-
-
-        </div>
-
     </div>
-    <!-- /.container -->
 </body>
 
 </html>

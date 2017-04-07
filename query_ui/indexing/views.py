@@ -35,7 +35,7 @@ def search(request):
 	if queryInput is not None and queryInput != u"":
 		parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
 						 "source", "date", "JD","url", "latitude", "longitude",
-						 "relative_time", "job_id"], ix.schema)
+						 "relative_time"], ix.schema)
 		try:
 			query = parser.parse(queryInput)
 			print (query)
@@ -86,12 +86,34 @@ def crawl(request):
 def classify(request):
 	return render(request, 'classify.html')
 
-def job_details(request, pk):	
-	job = get_object_or_404(Job, pk=pk)
+def job_details(request, pk='10'):	
+	results = []
+	ix = open_dir(settings.WHOOSH_INDEX)
+	parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
+					 "source", "date", "JD","url", "latitude", "longitude",
+					 "relative_time"], ix.schema)
+	try:
+		query = parser.parse("job_id:"+pk)
+		print (query)
+
+	except:
+        # don't show the user weird errors only because we don't
+        # understand the query.
+        # parser.parse("") would return None
+		query = None
+	if query is not None:
+		searcher = ix.searcher()
+		results = searcher.search(query)
+	print(len(results))
+	for result in results:
+		print(result)
+	return render(request, 'job_details.html',
+	              {'query': pk, 'results': results}
+	              )
 
 
-	# job = Job.objects.get(pk=pk)
-	return render(request, 'job_details.html', {'job': job})
+	# # job = Job.objects.get(pk=pk)
+	# return render(request, 'job_details.html', {'job': job})
 
 
 
