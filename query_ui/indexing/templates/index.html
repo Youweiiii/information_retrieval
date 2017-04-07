@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Job Search Portal</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'indexing/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'indexing/css/stylish-portfolio.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'indexing/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <ul>
+          <li><a class="active" href="">Home</a></li>
+          <li><a href="/search/">Search</a></li>
+          <li><a href="/crawl/">Crawl</a></li>
+          <li><a href="/classify/">Classify</a></li>
+        </ul>
+    </div>
+
+
+    <!-- Header -->
+<!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h2>Start Your Job Search Today!</h2>
+            <br>
+            <br>
+            <br>
+            <form  name='searchForm' method="get" action="/search/">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-xs-2 col-sm-3"></div>
+                    <div class="col-xs-6 col-sm-6">
+                        <input type="text" class="form-control" placeholder="Enter Keywords: e.g. finance, IT, manager, consultants, etc" name="jobName" id='jobName' required  value="{{ query|default_if_none:"" }}" onload="document.getElementById('jobName').focus();" /> 
+                    </div>
+                    <div class="col-xs-2 col-sm-2" align="left">
+                        <input type="submit" class="btn btn-dark btn-sm" value="Find Jobs" />
+                    </div>  
+                    <div class="col-xs-10 col-sm-4"></div>     
+                </div>
+            </form>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+    </header>
+
+</body>
+
+</html>
