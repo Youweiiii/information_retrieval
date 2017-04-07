@@ -24,14 +24,15 @@ WHOOSH_SCHEMA = fields.Schema(jobtitle = fields.TEXT(stored=True),
 							 url=fields.ID(stored=True, unique=True),
 							 latitude=fields.TEXT(stored=True),
 							 longitude=fields.TEXT(stored=True),
-							 relative_time=fields.TEXT
+							 relative_time=fields.TEXT,
+							 job_id = fields.TEXT(stored=True)
 						)
 
 # ana = analysis.StemmingAnalyzer()
 
 columns = ["jobtitle", "company", "city", "state", "country",
 					 "source", "date", "JD","url", "latitude", "longitude",
-					 "relative_time"]
+					 "relative_time", "job_id"]
 
 
 def create_index(sender=None, **kwargs):
@@ -42,6 +43,7 @@ def create_index(sender=None, **kwargs):
 		# ix = index.Index(storage, schema=WHOOSH_SCHEMA, create=True)
 		ix = create_in(settings.WHOOSH_INDEX, WHOOSH_SCHEMA)
 		ix = open_dir(settings.WHOOSH_INDEX)
+		i = 0
 		with ix.writer(limitmb=256) as writer:
 			# Open the CSV file 
 			filepath = os.path.dirname(os.path.abspath(__file__)) + "/inputs/IndeedAPI_Text_Corpus_V1_CSV.csv"
@@ -68,6 +70,8 @@ def create_index(sender=None, **kwargs):
 
 						# Put the value in the dictionary
 						doc[fieldname] = value
+					doc["job_id"] = str(i)
+					i = i + 1
 
 					# Pass the dictionary to the add_document method
 					writer.add_document(**doc)

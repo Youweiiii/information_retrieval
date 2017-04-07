@@ -63,6 +63,11 @@ hr.small {
     max-width: 100px;
 }
 
+.verticalLine {
+  border-left: thin solid #E0E0E0;
+}
+
+
 /* Side Menu */
 
 #sidebar-wrapper {

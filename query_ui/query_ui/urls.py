@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^search/', views.search, name = 'search'),
     url(r'^crawl/', views.crawl, name = 'crawl'),
     url(r'^classify/', views.classify, name = 'classify'),
-    url(r'^template/', views.template, name = 'template')
-
+    url(r'^template/', views.template, name = 'template'),
+    url(r'^job_details/(?P<pk>\d+)/$', views.job_details, name='job_details'),
+    url(r'^job_details/(?P<pk>\s+)/$', views.job_details, name='job_details')
 ]

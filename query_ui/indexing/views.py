@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 # from django.views.generic.simple import direct_to_template
 from whoosh import fields
@@ -8,6 +8,10 @@ from whoosh.qparser import QueryParser
 from whoosh.qparser import MultifieldParser
 from indexing.search import WHOOSH_SCHEMA
 from indexing import search
+from .models import Job
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+
 # Create your views here.
 
 def index(request):
@@ -27,15 +31,15 @@ def search(request):
 	results = []
 	ix = open_dir(settings.WHOOSH_INDEX)
 	queryInput = request.GET.get('jobName', None)
-	print (queryInput)
+	# print (queryInput)
 	if queryInput is not None and queryInput != u"":
 		parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
 						 "source", "date", "JD","url", "latitude", "longitude",
-						 "relative_time"], ix.schema)
+						 "relative_time", "job_id"], ix.schema)
 		try:
 			query = parser.parse(queryInput)
 			print (query)
-			# print(results)
+
 		except:
 	        # don't show the user weird errors only because we don't
 	        # understand the query.
@@ -45,7 +49,8 @@ def search(request):
 			searcher = ix.searcher()
 			results = searcher.search(query)
 	print(len(results))
-
+	for result in results:
+		print(result)
 	return render(request, 'search.html',
 	              {'query': queryInput, 'results': results}
 	              )
@@ -80,6 +85,14 @@ def crawl(request):
 
 def classify(request):
 	return render(request, 'classify.html')
+
+def job_details(request, pk):	
+	job = get_object_or_404(Job, pk=pk)
+
+
+	# job = Job.objects.get(pk=pk)
+	return render(request, 'job_details.html', {'job': job})
+
 
 
 def template(request):
