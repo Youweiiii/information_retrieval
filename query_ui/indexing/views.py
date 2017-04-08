@@ -1,16 +1,22 @@
+import os
+import csv
 from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 # from django.views.generic.simple import direct_to_template
+from .models import Job
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 from whoosh import fields
 from whoosh.index import open_dir
 import whoosh.filedb.filestore as store
 from whoosh.qparser import QueryParser
 from whoosh.qparser import MultifieldParser
-from indexing.search import WHOOSH_SCHEMA
+from indexing.search import WHOOSH_SCHEMA, columns
 from indexing import search
-from .models import Job
-from django.urls import reverse
-from django.http import HttpResponseRedirect
+from whoosh.query import Term, Or, And
+from whoosh import qparser
+from indexing.resumeMatch import resumeSearch
+import time 
 
 # Create your views here.
 
@@ -19,18 +25,19 @@ def index(request):
 	return render(request, 'index.html')
 
 def search(request):
-	"""
-	Simple search view, which accepts search queries via url, like google.
-	Use something like ?q=this+is+the+serch+term
+	timeS = time.time()
 
-	"""
-	# storage = store.FileStorage(settings.WHOOSH_INDEX)
-	# ix = index.Index(storage, schema=WHOOSH_SCHEMA)
-	
-	#search function
 	results = []
+	searchResults = request.session.get('searchResults', None)
+	careerType = request.GET.get('type', None)
+	country = request.GET.get('country', None)
+
+	queryInput = request.GET.get('jobName', None) 
+
+	if queryInput is None:
+		queryInput = request.session['searchQuery']		
 	ix = open_dir(settings.WHOOSH_INDEX)
-	queryInput = request.GET.get('jobName', None)
+	# queryInput = request.GET.get('jobName', None)
 	# print (queryInput)
 	if queryInput is not None and queryInput != u"":
 		parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
@@ -38,7 +45,7 @@ def search(request):
 						 "relative_time"], ix.schema)
 		try:
 			query = parser.parse(queryInput)
-			print (query)
+			
 
 		except:
 	        # don't show the user weird errors only because we don't
@@ -46,13 +53,36 @@ def search(request):
 	        # parser.parse("") would return None
 			query = None
 		if query is not None:
+			filt = None
+			if (country is not None):
+				country = country.strip()
+				filt = Term("country",country)
+			if (careerType is not None):
+				if filt is None:
+					filt = Term("category", careerType)
+				else:
+					filt = And([Term("country",country), Term("category", careerType)])
 			searcher = ix.searcher()
-			results = searcher.search(query)
-	print(len(results))
-	for result in results:
-		print(result)
+			results = searcher.search(query, filter=filt)
+			# results = searcher.search(query)
+			for result in results:
+				print (result)
+			numResults = len(results)
+			print (numResults)
+	# print(len(results))
+	# print ("done with filtering")
+	
+	request.session['searchQuery'] = queryInput
+	# for result in results:
+	# 	print(result)
+
+	timeE = time.time()
+	timeLapse = timeE - timeS
+	timeLapse = float("{0:.3f}".format(timeLapse))
+	# print (timeLapse)
+
 	return render(request, 'search.html',
-	              {'query': queryInput, 'results': results}
+	              {'query': queryInput, 'results': results, 'time': timeLapse, 'num': numResults}
 	              )
 
 	# hits = []
@@ -80,10 +110,37 @@ def search(request):
 
 	# return render(request, 'results.html')
 
-def crawl(request):
-	return render(request, 'crawl.html')
+def classifyResults(request):
+	timeS = time.time()
+	resume = request.GET.get('resumeInput', None)
+	indexes = resumeSearch(resume)
+
+	ix = open_dir(settings.WHOOSH_INDEX)
+	parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
+					 "source", "date", "JD","url", "latitude", "longitude",
+					 "relative_time"], ix.schema, group=qparser.OrGroup)
+
+	queryInput = ""
+	for i in indexes:
+		queryInput = queryInput +"job_id:" + i + " OR "
+			
+	query = parser.parse(queryInput)
+	searcher = ix.searcher()
+	# results = searcher.search(query, filter=filt)
+	results = searcher.search(query)
+
+	numResults = len(results)
+
+	timeE = time.time()
+	timeLapse = timeE - timeS
+	timeLapse = float("{0:.3f}".format(timeLapse))
+	# print (timeLapse)
+
+	return render(request, 'classifyResults.html', {"results": results, 'time': timeLapse, 'num': numResults}
+		)
 
 def classify(request):
+
 	return render(request, 'classify.html')
 
 def job_details(request, pk='10'):	
@@ -107,8 +164,9 @@ def job_details(request, pk='10'):
 	print(len(results))
 	for result in results:
 		print(result)
+	searchQuery = request.session["searchQuery"]
 	return render(request, 'job_details.html',
-	              {'query': pk, 'results': results}
+	              {'query': pk, 'results': results, 'searchQuery':searchQuery}
 	              )
 
 

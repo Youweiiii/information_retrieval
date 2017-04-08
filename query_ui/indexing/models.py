@@ -18,4 +18,5 @@ class Job(models.Model):
 	latitude = models.FloatField(null=True)
 	longitude = models.FloatField(null=True)
 	relative_time = NGRAM
-	job_id = models.AutoField(primary_key=True)
+	job_id = models.CharField(max_length=100,primary_key=True)
+	category = models.CharField(max_length=100,null=True)    

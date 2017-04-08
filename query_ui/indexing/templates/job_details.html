@@ -43,8 +43,7 @@
      <div class="nav">
         <ul>
           <li><a href="/index/">Home</a></li>
-          <li><a class="active" href="">Search</a></li>
-          <li><a href="/crawl/">Crawl</a></li>
+          <li><a class="active" href="/search/">Search</a></li>
           <li><a href="/classify/">Classify</a></li>
         </ul>
     </div>
@@ -58,7 +57,7 @@
         <div class="row">
             <div class="col-xs-2 col-sm-3"></div>
             <div class="col-xs-6 col-sm-6">
-                <input type="text" class="form-control" placeholder="Enter Keywords: e.g. finance, IT, manager, consultants, etc" name="jobName" id='jobName' required  value="{{job.jobtitle|default_if_none:"" }}" onload="document.getElementById('jobName').focus();" /> 
+                <input type="text" class="form-control" placeholder="Enter Keywords: e.g. finance, IT, manager, consultants, etc" name="jobName" id='jobName' required value="{{searchQuery}}" onload="document.getElementById('jobName').focus();" /> 
             </div>
             <div class="col-xs-2 col-sm-2" align="left">
                 <input type="submit" class="btn btn-primary btn-sm" value="Find Jobs" />
@@ -76,17 +75,108 @@
             <div class="col-sm-3">
                 <div class="list-group">
                     <ul>
-
-
-                    </ul>
-                    <ul>
-
-
-                    </ul>
-
-                    <ul>
-
-
+                        <form action="/search/">
+                            <!-- <p>Job Categories: </p>
+                            <input type="checkbox" name="career" value="Accounting"> Accounting<br>
+                            <input type="checkbox" name="career" value="Administrative"> Administrative<br>
+                            <input type="checkbox" name="career" value="Arts and Design"> Arts and Design<br>
+                            <input type="checkbox" name="career" value="Business Development"> Business Development<br>
+                            <input type="checkbox" name="career" value="Consulting"> Consulting<br>
+                            <input type="checkbox" name="career" value="Education"> Education<br>
+                            <input type="checkbox" name="career" value="Engineering"> Engineering<br>
+                            <input type="checkbox" name="career" value="Finance"> Finance<br>
+                            <input type="checkbox" name="career" value="Healthcare Services"> Healthcare Services<br>
+                            <input type="checkbox" name="career" value="Human Resources"> Human Resources<br>
+                            <input type="checkbox" name="career" value="Information Technology"> Information Technology<br>
+                            <input type="checkbox" name="career" value="Legal"> Legal<br>
+                            <input type="checkbox" name="career" value="Marketing"> Marketing<br>
+                            <input type="checkbox" name="career" value="Media & Communications"> Media & Communications<br>
+                            <input type="checkbox" name="career" value="Military & Protective Services"> Military & Protective Services<br>
+                            <input type="checkbox" name="career" value="Operations"> Operations<br>
+                            <input type="checkbox" name="career" value="Project Management"> Project Management<br>
+                            <input type="checkbox" name="career" value="Quality Assurance"> Quality Assurance<br>
+                            <input type="checkbox" name="career" value="Real Estate"> Real Estate<br>
+                            <input type="checkbox" name="career" value="Sales"> Sales<br>
+                            <input type="checkbox" name="career" value="Support"> Support<br> -->
+                        <p> Career Type: </p>
+                        <select name="type" size="5" id="type"  multiple>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Administrative">Administrative</option>
+                            <option value="Arts and Design">Arts and Design</option>
+                            <option value="Business Development">Business Development</option>
+                            <option value="Consulting">Consulting</option>
+                            <option value="Education">Education</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Healthcare Services">Healthcare Services</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Legal">Legal</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Media & Communications">Media & Communications</option>
+                            <option value="Military & Protective Services">Military & Protective Services</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Project Management">Project Management</option>
+                            <option value="Quality Assurance">Quality Assurance</option>
+                            <option value="Real Estate">Real Estate</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Support">Support</option>
+                        </select>
+                        <br>
+                        <br>
+                        <br>
+                        <p> Job Locations: </p>
+                        <select name="country" size="5"id="country" multiple> Country
+                            <option value=" AE "> United Arab Emirates </option>
+                            <option value=" AR "> Argentina </option>
+                            <option value=" AU "> Australia </option>
+                            <option value=" BE "> Belgium </option>
+                            <option value=" BH "> Bahrain </option>
+                            <option value=" BR "> Brazil </option>
+                            <option value=" CA "> Canada </option>
+                            <option value=" CH "> Switzerland </option>
+                            <option value=" CL "> Chile </option>
+                            <option value=" CN "> China </option>
+                            <option value=" CO "> Colombia </option>
+                            <option value=" CZ "> Czechia </option>
+                            <option value=" DE "> Germany </option>
+                            <option value=" DK "> Denmark </option>
+                            <option value=" ES "> Spain </option>
+                            <option value=" FI "> Finland </option>
+                            <option value=" FR "> France </option>
+                            <option value=" GR "> Greece </option>
+                            <option value=" HK "> Hong Kong </option>
+                            <option value=" HU "> Hungary </option>
+                            <option value=" ID "> Indonesia </option>
+                            <option value=" IE "> Ireland </option>
+                            <option value=" IN "> India </option>
+                            <option value=" IT "> Italy </option>
+                            <option value=" JP "> Japan </option>
+                            <option value=" LU "> Luxembourg </option>
+                            <option value=" MY "> Malaysia </option>
+                            <option value=" NL "> Netherlands </option>
+                            <option value=" NO "> Norway </option>
+                            <option value=" NZ "> New Zealand </option>
+                            <option value=" OM "> Oman </option>
+                            <option value=" PE "> Peru </option>
+                            <option value=" PH "> Philippines </option>
+                            <option value=" PK "> Pakistan </option>
+                            <option value=" PL "> Poland </option>
+                            <option value=" PT "> Portugal </option>
+                            <option value=" QA "> Qatar </option>
+                            <option value=" RO "> Romania </option>
+                            <option value=" RU "> Russian Federation </option>
+                            <option value=" SG "> Singapore </option>
+                            <option value=" TR "> Turkey </option>
+                            <option value=" TW "> Taiwan, Province of China </option>
+                            <option value=" US "> United States of America </option>
+                            <option value=" VE "> Venezuela, Bolivarian Republic of </option>
+                            <option value=" ZA "> South Africa </option>
+                        </select>
+                        <br>
+                        <br>
+                        <input class="btn btn-primary btn-sm" type="submit" value="Filter Results">
+                        </form>
                     </ul>
 
                 </div>
@@ -105,7 +195,9 @@
 								<br>
 							</div>
 							<div class="panel-body">
+                                <p class="text-muted pull-right">{{job.category}}</p>
 								<h4>Company: {{job.company}}</h4>
+                                
 								<p class="text-muted">
 			                        <span>Location: </span>
 			                        <span>{{job.city}}, </span>
@@ -114,16 +206,17 @@
 			                        <span class="pull-right">Posted on: {{job.date}}</span>
 		                    	</p>
 			                    <br>
+                                <p>Job Description: {{job.JD}}</p> 
 			                    <br>
 			                    <p>Get more information: </p>
-			                    <a href="{% url 'index' %}">{{job.url}}</a>
+                                <a href="{% url 'index'%}">{{job.url}}</a>
 			                </div>
 						</div>
 					{% endfor %}
 				{% endif %}  
             </div>
 
-            <div class="col-sm-1 verticalLine" align="left">
+            <div class="col-sm-1 verticalLine" align="left"/>
 
         </div>
     </div>

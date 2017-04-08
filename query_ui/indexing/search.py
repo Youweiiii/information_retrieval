@@ -13,26 +13,27 @@ import sys
 import csv
 
 
-WHOOSH_SCHEMA = fields.Schema(jobtitle = fields.TEXT(stored=True),
-							 company= fields.TEXT(stored=True),
-							 city= fields.TEXT(stored=True),
-							 state= fields.TEXT(stored=True),
-							 country= fields.TEXT(stored=True),
-							 source= fields.TEXT(stored=True),
-							 date= fields.TEXT(stored=True),
-							 JD= fields.TEXT, 
-							 url=fields.ID(stored=True, unique=True),
-							 latitude=fields.TEXT(stored=True),
-							 longitude=fields.TEXT(stored=True),
-							 relative_time=fields.TEXT,
-							 job_id = fields.TEXT(stored=True)
+WHOOSH_SCHEMA = fields.Schema(jobtitle = fields.KEYWORD(stored=True),
+							 company= fields.KEYWORD(stored=True),
+							 city= fields.KEYWORD(stored=True),
+							 state= fields.KEYWORD(stored=True),
+							 country= fields.KEYWORD(stored=True),
+							 source= fields.KEYWORD(stored=True),
+							 date= fields.KEYWORD(stored=True),
+							 JD= fields.NGRAM(stored=True), 
+							 url=fields.KEYWORD(stored=True),
+							 latitude=fields.KEYWORD(stored=True),
+							 longitude=fields.KEYWORD(stored=True),
+							 relative_time=fields.KEYWORD(stored=True),
+							 job_id = fields.KEYWORD(stored=True),
+							 category = fields.KEYWORD(stored=True)
 						)
 
 # ana = analysis.StemmingAnalyzer()
 
 columns = ["jobtitle", "company", "city", "state", "country",
 					 "source", "date", "JD","url", "latitude", "longitude",
-					 "relative_time", "job_id"]
+					 "relative_time", "job_id", "category"]
 
 
 def create_index(sender=None, **kwargs):
@@ -43,10 +44,9 @@ def create_index(sender=None, **kwargs):
 		# ix = index.Index(storage, schema=WHOOSH_SCHEMA, create=True)
 		ix = create_in(settings.WHOOSH_INDEX, WHOOSH_SCHEMA)
 		ix = open_dir(settings.WHOOSH_INDEX)
-		i = 0
 		with ix.writer(limitmb=256) as writer:
 			# Open the CSV file 
-			filepath = os.path.dirname(os.path.abspath(__file__)) + "/inputs/IndeedAPI_Text_Corpus_V1_CSV.csv"
+			filepath = os.path.dirname(os.path.abspath(__file__)) + "/inputs/classifiedCorpus.csv"
 			with open(filepath, "r", encoding = "ISO-8859-1") as csvfile:
 				# Create a csv reader object for the file
 				csvreader = csv.reader(csvfile)
@@ -60,7 +60,6 @@ def create_index(sender=None, **kwargs):
 					# Read the values for the row enumerated like
 					# (0, "name"), (1, "quantity"), etc.
 					for colnum, value in enumerate(row):
-
 						# Get the field name from the "columns" list
 						fieldname = columns[colnum]
 
@@ -70,8 +69,6 @@ def create_index(sender=None, **kwargs):
 
 						# Put the value in the dictionary
 						doc[fieldname] = value
-					doc["job_id"] = str(i)
-					i = i + 1
 
 					# Pass the dictionary to the add_document method
 					writer.add_document(**doc)

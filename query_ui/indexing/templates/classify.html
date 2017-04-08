@@ -29,9 +29,8 @@
     <!-- Navigation -->
     <div class="nav">
         <ul>
-          <li><a href="">Home</a></li>
+          <li><a href="/index/">Home</a></li>
           <li><a href="/search/">Search</a></li>
-          <li><a href="/crawl/">Crawl</a></li>
           <li><a class="active" href="">Classify</a></li>
         </ul>
     </div>
@@ -42,22 +41,24 @@
     <header id="top" class="header">
         <div class="text-vertical-center">
             <h2>Start Your Job Search Today!</h1>
-            <br>
-            <br>
-            <br>
-            <form  name='searchForm' method="get" action="/search/">
-                {% csrf_token %}
+            <form  name='searchForm' method="get" action="/classifyResults/">
                 <div class="row">
-                    <div class="col-xs-2 col-sm-3"></div>
-                    <div class="col-xs-6 col-sm-6">
-                        <input type="text" class="form-control" placeholder="Enter Keywords: e.g. finance, IT, manager, consultants, etc" name="jobName" id='jobName' required  value="{{ query|default_if_none:"" }}" onload="document.getElementById('jobName').focus();" /> 
+                    <div class="col-xs-2 col-sm-2"></div>
+                    <div class="col-xs-8 col-sm-8" align="left">
+                        <h4 align="left">To find jobs matching with your resume</h4>
+                        <div class="form-group">
+                            <textarea rows="18" class="form-control input-lg" type="text" style="font-size:14pt" placeholder="Please paste your resmue here: e.g. your skills, interests, etc." name="resumeInput" id='resumeInput' required  value="{{ query|default_if_none:"" }}" onload="document.getElementById('resumeInput').focus();"></textarea>
+                        </div>
+                        <div align = "right">
+                            <input type="submit" class="btn btn-primary btn-sm" value="Search with Resume" />
+                        </div>
                     </div>
                     <div class="col-xs-2 col-sm-2" align="left">
-                        <input type="submit" class="btn btn-dark btn-sm" value="Find Jobs" />
                     </div>  
-                    <div class="col-xs-10 col-sm-4"></div>     
                 </div>
             </form>
+            <br>
+            <br>
         </div>
     </header>
 
