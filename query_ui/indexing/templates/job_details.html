@@ -209,7 +209,7 @@
                                 <p>Job Description: {{job.JD}}</p> 
 			                    <br>
 			                    <p>Get more information: </p>
-                                <a href="{% url 'index'%}">{{job.url}}</a>
+                                <a href={{job.url}}>{{job.url}}</a>
 			                </div>
 						</div>
 					{% endfor %}

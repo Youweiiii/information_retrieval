@@ -32,17 +32,23 @@ def search(request):
 	careerType = request.GET.get('type', None)
 	country = request.GET.get('country', None)
 
-	queryInput = request.GET.get('jobName', None) 
+	originalQuery = request.GET.get('jobName', None) 
 
-	if queryInput is None:
-		queryInput = request.session['searchQuery']		
+	if originalQuery is None:
+		originalQuery = request.session['searchQuery']	
+	queryInput = originalQuery
+	queryInput = queryInput.replace("+", " AND ").replace("-", " NOT ").replace("|", " OR ")
+	queryInput = queryInput + " NOT <b>"
+
 	ix = open_dir(settings.WHOOSH_INDEX)
+	searcher = ix.searcher()
+	parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
+						 "source", "date", "JD","url", "latitude", "longitude",
+						 "relative_time"], ix.schema)
+	results
 	# queryInput = request.GET.get('jobName', None)
 	# print (queryInput)
 	if queryInput is not None and queryInput != u"":
-		parser = MultifieldParser(["jobtitle", "company", "city", "state", "country",
-						 "source", "date", "JD","url", "latitude", "longitude",
-						 "relative_time"], ix.schema)
 		try:
 			query = parser.parse(queryInput)
 			
@@ -62,17 +68,26 @@ def search(request):
 					filt = Term("category", careerType)
 				else:
 					filt = And([Term("country",country), Term("category", careerType)])
-			searcher = ix.searcher()
 			results = searcher.search(query, filter=filt)
-			# results = searcher.search(query)
-			for result in results:
-				print (result)
 			numResults = len(results)
-			print (numResults)
+			# results = searcher.search(query)
+			# for result in results:
+			# 	print (result)
+	else:
+		queryInput = ""
+		for i in range(1,100):
+			queryInput = queryInput +"job_id:" + str(i) + " OR "
+
+		queryExclude = parser.parse("<b>")
+		query = parser.parse(queryInput)
+		results = searcher.search(query, mask=queryExclude)
+		numResults = 48964
+
+	# print (numResults)
 	# print(len(results))
 	# print ("done with filtering")
 	
-	request.session['searchQuery'] = queryInput
+	request.session['searchQuery'] = originalQuery
 	# for result in results:
 	# 	print(result)
 
@@ -82,7 +97,7 @@ def search(request):
 	# print (timeLapse)
 
 	return render(request, 'search.html',
-	              {'query': queryInput, 'results': results, 'time': timeLapse, 'num': numResults}
+	              {'query': originalQuery, 'results': results, 'time': timeLapse, 'num': numResults}
 	              )
 
 	# hits = []
@@ -112,6 +127,7 @@ def search(request):
 
 def classifyResults(request):
 	timeS = time.time()
+	request.session['searchQuery'] = ""
 	resume = request.GET.get('resumeInput', None)
 	indexes = resumeSearch(resume)
 
@@ -123,11 +139,12 @@ def classifyResults(request):
 	queryInput = ""
 	for i in indexes:
 		queryInput = queryInput +"job_id:" + i + " OR "
-			
+	
+	queryExclude = parser.parse("<b>")
 	query = parser.parse(queryInput)
 	searcher = ix.searcher()
 	# results = searcher.search(query, filter=filt)
-	results = searcher.search(query)
+	results = searcher.search(query, mask=queryExclude)
 
 	numResults = len(results)
 
