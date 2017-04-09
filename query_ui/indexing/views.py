@@ -38,7 +38,7 @@ def search(request):
 		originalQuery = request.session['searchQuery']	
 	queryInput = originalQuery
 	queryInput = queryInput.replace("+", " AND ").replace("-", " NOT ").replace("|", " OR ")
-	queryInput = queryInput + " NOT <b>"
+	# queryInput = queryInput + " NOT <b>"
 
 	ix = open_dir(settings.WHOOSH_INDEX)
 	searcher = ix.searcher()
@@ -78,10 +78,13 @@ def search(request):
 		for i in range(1,100):
 			queryInput = queryInput +"job_id:" + str(i) + " OR "
 
-		queryExclude = parser.parse("<b>")
+		# queryExclude = parser.parse("<b>")
 		query = parser.parse(queryInput)
-		results = searcher.search(query, mask=queryExclude)
+		results = searcher.search(query)
 		numResults = 48964
+		# results = searcher.documents(limit = 100)
+		# numResults = len(results)
+		
 
 	# print (numResults)
 	# print(len(results))
@@ -140,11 +143,11 @@ def classifyResults(request):
 	for i in indexes:
 		queryInput = queryInput +"job_id:" + i + " OR "
 	
-	queryExclude = parser.parse("<b>")
+	# queryExclude = parser.parse("<b>")
 	query = parser.parse(queryInput)
 	searcher = ix.searcher()
 	# results = searcher.search(query, filter=filt)
-	results = searcher.search(query, mask=queryExclude)
+	results = searcher.search(query)
 
 	numResults = len(results)
 

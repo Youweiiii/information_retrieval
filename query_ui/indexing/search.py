@@ -47,7 +47,8 @@ def create_index(sender=None, **kwargs):
 		with ix.writer(limitmb=256) as writer:
 			# Open the CSV file 
 			filepath = os.path.dirname(os.path.abspath(__file__)) + "/inputs/classifiedCorpus.csv"
-			with open(filepath, "r", encoding = "ISO-8859-1") as csvfile:
+			with open(filepath, "r", encoding = "utf-8") as csvfile:
+				# ISO-8859-1
 				# Create a csv reader object for the file
 				csvreader = csv.reader(csvfile)
 
